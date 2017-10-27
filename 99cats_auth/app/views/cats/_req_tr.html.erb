@@ -1,16 +1,21 @@
 <tr>
+  <td> <%= req.requester.username %> </td>
   <td><%= req.start_date %></td>
   <td><%= req.end_date %></td>
-  <td>
-    <% if req.pending? %>
-      <form action="<%= approve_cat_rental_request_url(req) %>" method="POST">
-        <input type="submit" value="Approve" />
-      </form>
-      <form action="<%= deny_cat_rental_request_url(req) %>" method="POST">
-        <input type="submit" value="Deny" />
-      </form>
-    <% else %>
-      <%= req.status %>
+  <% if self.current_user && !self.current_user.cats.where(id: params[:id]).to_a.empty? %>
+    <td>
+      <% if req.pending? %>
+        <form action="<%= approve_cat_rental_request_url(req) %>" method="POST">
+          <input type="submit" value="Approve" />
+          <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+        </form>
+        <form action="<%= deny_cat_rental_request_url(req) %>" method="POST">
+          <input type="submit" value="Deny" />
+          <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+        </form>
+      <% else %>
+        <%= req.status %>
+      <% end %>
+    </td>
     <% end %>
-  </td>
 </tr>

@@ -1,4 +1,6 @@
 class CatsController < ApplicationController
+  before_action :owns_cat, only: [:edit, :update]
+
   def index
     @cats = Cat.all
     render :index
@@ -14,8 +16,21 @@ class CatsController < ApplicationController
     render :new
   end
 
+  helper_method :owns_cat
+
+  def owns_cat
+    if !self.logged_in?
+      redirect_to cats_url
+    elsif self.current_user.cats.where(id: params[:id]).to_a.empty?
+      redirect_to cats_url
+    else
+      true
+    end
+  end
+
   def create
     @cat = Cat.new(cat_params)
+    @cat.user_id = self.current_user.id
     if @cat.save
       redirect_to cat_url(@cat)
     else

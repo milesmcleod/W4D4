@@ -9,6 +9,14 @@
   </head>
 
   <body>
+    <% if flash[:errors] %>
+      <h3>errors: </h3>
+       <ul>
+         <% flash[:errors].each do |error| %>
+         <li> <%= error %> </li>
+         <% end %>
+       </ul>
+    <% end %>
     <% if self.current_user %>
       <h1>Hello <%= self.current_user.username %>!</h1>
       <form class="" action="<%= session_url %>" method="post">
@@ -18,8 +26,12 @@
       </form>
       <% else %>
       <form class="" action="<%= new_session_url %>" method="get">
-  
+
         <input type="submit" value="Log In">
+      </form>
+      <form class="" action="<%= new_user_url %>" method="get">
+
+        <input type="submit" value="Sign Up">
       </form>
     <% end %>
     <%= yield %>
